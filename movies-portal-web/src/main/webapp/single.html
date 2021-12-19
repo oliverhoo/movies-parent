@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <title>影视详情</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <link href="css/bootstrap.css" rel="stylesheet" type="text/css" media="all"/>
+    <link href="css/style.css" rel="stylesheet" type="text/css" media="all"/>
+    <link href="css/medile.css" rel='stylesheet' type='text/css'/>
+    <link href="css/single.css" rel="stylesheet" type="text/css"/>
+</head>
+
+<body>
+<div id="moviesDetail">
+    <!-- header -->
+    <div class="header">
+        <div class="container">
+            <div class="w3layouts_logo">
+                <a href="/"><h1>黑马<span>影视</span></h1></a>
+            </div>
+            <div class="w3l_sign_in_register">
+                <ul>
+                    <li><i class="fa fa-phone" aria-hidden="true"></i> 400-618-9090</li>
+                    <li v-if="!isLoginFlag"><a href="#" data-toggle="modal" data-target="#myModal">登录</a></li>
+                </ul>
+            </div>
+            <div class="clearfix"></div>
+        </div>
+    </div>
+
+    <!-- 这里是登录的窗口-->
+    <div class="modal video-modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModal">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    登录 & 注册
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                            aria-hidden="true">&times;</span></button>
+                </div>
+                <section>
+                    <div class="modal-body">
+                        <div class="w3_login_module">
+                            <div class="module form-module">
+                                <div class="toggle"><i class="fa fa-times fa-pencil"></i>
+                                    <div class="tooltip">点我</div>
+                                </div>
+                                <div class="form">
+                                    <h3>账户登录</h3>
+                                    <form action="#" method="post">
+                                        <input type="text" placeholder="用户名" v-model="username" required="">
+                                        <input type="password" placeholder="密码" v-model="password" required="">
+                                        <input type="button" @click="login()" value="登录">
+                                    </form>
+                                </div>
+                                <div class="form">
+                                    <h3>注册账户</h3>
+                                    <form action="#" method="post">
+                                        <input type="text" name="Username" placeholder="用户名" required="">
+                                        <input type="password" name="Password" placeholder="密码" required="">
+                                        <input type="email" name="Email" placeholder="邮箱" required="">
+                                        <input type="text" name="Phone" placeholder="手机号" required="">
+                                        <input type="submit" value="注册">
+                                    </form>
+                                </div>
+                                <div class="cta"><a href="#">忘记密码?</a></div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </div>
+
+    <!--nav-->
+    <div class="movies_nav">
+        <div class="container">
+            <nav class="navbar navbar-default">
+                <div class="collapse navbar-collapse navbar-right" id="bs-example-navbar-collapse-1">
+                    <nav>
+                        <ul class="nav navbar-nav">
+                            <li class="active"><a href="/">首页</a></li>
+                            <li><a href="#">类型 </a></li>
+                            <li><a href="#">电视连续剧</a></li>
+                            <li><a href="#">最新电影</a></li>
+                            <li><a href="#">最热电影</a></li>
+                            <li><a href="#">国家</a></li>
+                        </ul>
+                    </nav>
+                </div>
+            </nav>
+        </div>
+    </div>
+
+    <!-- single -->
+    <div class="single-page-agile-main">
+        <div class="container">
+            <!-- /w3l-medile-movies-grids -->
+            <div class="agileits-single-top">
+                <ol class="breadcrumb">
+                    <li><a href="/">首页</a></li>
+                    <li class="active">影视详情</li>
+                </ol>
+            </div>
+            <div class="single-page-agile-info">
+                <!-- /movie-browse-agile -->
+                <div class="show-top-grids-w3lagile">
+                    <div class="single-left">
+                        <div class="song">
+                            <!--标题-->
+                            <div class="song-info">
+                                <h3>{{movies.title}}</h3>
+                            </div>
+                            <div class="video-grid-single-page-agileits">
+                                <!--电影图片-->
+                                <div data-video="dLmKio67pVQ" id="video">
+                                    <img :src="movies.picPath" alt="" class="img-responsive"/>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="clearfix"></div>
+
+                        <div class="all-comments">
+                            <div class="all-comments-info">
+                                <a href="#">评论</a>
+                                <div class="agile-info-wthree-box">
+                                    <form>
+                                        <input type="hidden">
+                                        <textarea placeholder="您的评论" v-model="comment.content" required=""></textarea>
+                                        <input type="button" @click="saveComment()" value="发表">
+                                        <div class="clearfix"></div>
+                                    </form>
+                                </div>
+                            </div>
+                            <div class="media-grids">
+
+                                <div class="media" v-for="comment in commentList">
+                                    <h5>{{comment.creatorName}}</h5>
+                                    <div class="media-left">
+                                        <a href="#">
+                                            <img src="images/user.jpg" title="One movies" alt=" "/>
+                                        </a>
+                                    </div>
+                                    <div class="media-body">
+                                        <p>{{comment.content}}</p>
+                                        <span>{{comment.time}}</span>
+                                    </div>
+                                </div>
+
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="clearfix"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- footer -->
+    <div class="footer">
+        <div class="container">
+            <div class="w3ls_footer_grid">
+                <div class="col-md-6 w3ls_footer_grid_left">
+                    <div class="w3ls_footer_grid_left1">
+                        <h2>订阅我们</h2>
+                        <div class="w3ls_footer_grid_left1_pos">
+                            <form action="#" method="post">
+                                <input type="email" name="email" placeholder="你的邮箱..." required="">
+                                <input type="submit" value="发送">
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 w3ls_footer_grid_right">
+                    <a href="index.html"><h2>heima<span>Movies</span></h2></a>
+                </div>
+                <div class="clearfix"></div>
+            </div>
+            <div class="col-md-5 w3ls_footer_grid1_left">
+                <p>Copyright &copy; 2020.传智播客教育股份有限公司版权所有。</p>
+            </div>
+            <div class="col-md-7 w3ls_footer_grid1_right">
+                <ul>
+                    <li>
+                        <a href="genres.html">电影</a>
+                    </li>
+                    <li>
+                        <a href="faq.html">常见问题</a>
+                    </li>
+                    <li>
+                        <a href="horror.html">动作</a>
+                    </li>
+                    <li>
+                        <a href="genres.html">冒险</a>
+                    </li>
+                    <li>
+                        <a href="comedy.html">喜剧</a>
+                    </li>
+                    <li>
+                        <a href="icons.html">图标</a>
+                    </li>
+                    <li>
+                        <a href="contact.html">联系我们</a>
+                    </li>
+                </ul>
+            </div>
+            <div class="clearfix"></div>
+        </div>
+    </div>
+</div>
+</body>
+
+<script type="text/javascript" src="js/jquery-2.1.4.min.js"></script>
+<script src="js/bootstrap.min.js"></script>
+<script type="text/javascript" src="/js/axios-0.18.0.js"></script>
+<script type="text/javascript" src="/js/vuejs-2.5.16.js"></script>
+<!--Vue的代码写到这里-->
+<script>
+    const app = new Vue({
+        el: '#moviesDetail',
+        data: {
+            movies:{},
+            username:"", //用户名
+            password:"", //密码
+            isLoginFlag : false , //是否登陆成功
+            commentList:[], //接受评论数据的对象
+            comment:{} //评论对象
+        },
+        methods: {
+            //findMoviesById 根据id查询影视数据
+            findMoviesById(id){
+                //alert(id);
+                axios.get("/movies/findMoviesById?id="+id).then(resp=>{
+                    this.movies= resp.data;
+                })
+            },
+            //登录按钮
+            login(){
+                //alert( this.username + "@@" + this.password);
+                axios.get("/menbers/login", {
+                    params:{
+                        username:this.username,
+                        password:this.password
+                    }
+                }).then(resp=>{
+                    alert(resp.data);
+                    //console.log(resp.data);//token
+                    //1.存入浏览器缓存中
+                    localStorage.setItem("Authorization" ,resp.data );
+                    //2.关闭弹出框 模态框
+                    $("#myModal").modal('hide'); // 关闭模态框(前端内容)  #() jquery的语法
+                    //3.隐藏登录按钮
+                    this.isLoginFlag = true; //表示登录成功
+                })
+            },
+            //查询影视数据
+            findCommentByMoviesId(moviesId){
+                axios.get("/comment/findCommentByMoviesId?id="+moviesId).then(resp=>{
+                    console.log(resp.data);
+                    this.commentList = resp.data;
+                });
+            },
+            //发表评论
+            saveComment(){
+                //1.获得双向绑定数据 - 评论内容
+                this.comment.moviesId=this.movies.id;//赋值影视id
+                //2.发送ajax请求
+                axios.post("/comment/save" , this.comment , {
+                    headers:{
+                        "Authorization": localStorage.getItem("Authorization")
+                    }
+                }).then(resp=>{
+                    if(resp.data){
+                        alert("评论成功");
+                        this.comment.content="";//修改数据为空
+                        //动态刷新 - 再查询一次评论
+                        let id = location.search.split("=")[1]; //截取id
+                        if(id){
+                            this.findCommentByMoviesId(id);//查询评论
+                        }
+                    }else{
+                        alert("评论失败")
+                    }
+                })
+            }
+        },
+        watch: {},
+        created() {
+            //页面加载可以直接判断浏览器缓存是否有 登录数据
+            let token = localStorage.getItem("Authorization");
+            if(token){
+                this.isLoginFlag = true;//如果浏览器缓存有值 将状态值修改成true即可
+            }
+            //读取到地址栏的id 根据id动态查询数据
+            let id = location.search.split("=")[1];
+            if(id){
+                this.findMoviesById(id);
+            }
+            //读取评论的数据
+            if(id){
+                this.findCommentByMoviesId(id);
+            }
+
+        }
+    })
+</script>
+
+</html>

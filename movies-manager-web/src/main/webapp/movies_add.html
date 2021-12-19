@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="zh-cn" xmlns:v-bind="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+    <meta name="renderer" content="webkit">
+    <title></title>
+    <link rel="stylesheet" href="css/pintuer.css">
+    <link rel="stylesheet" href="css/admin.css">
+    <script src="js/jquery.js"></script>
+    <script src="js/pintuer.js"></script>
+    <script src="/js/vuejs-2.5.16.js"></script>
+    <script src="/js/axios-0.18.0.js"></script>
+	<script src="/js/laydate/laydate.js"></script>
+</head>
+<body>
+<div class="panel admin-panel" id="moviesDiv">
+    <div class="panel-head" id="add"><strong><span class="icon-pencil-square-o"></span>增加影视内容</strong></div>
+    <div class="body-content">
+        <form method="post" class="form-x">
+            <input type="hidden" name="id" v-model="movies.id">
+            <div class="form-group">
+                <div class="label">
+                    <label>影视标题：</label>
+                </div>
+                <div class="field">
+                    <input type="text" class="input w50" v-model="movies.title" name="title"/>
+                    <div class="tips"></div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="label">
+                    <label>导演：</label>
+                </div>
+                <div class="field">
+                    <input type="text" class="input w50" v-model="movies.director" name="director"/>
+                    <div class="tips"></div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="label">
+                    <label>主要演员：</label>
+                </div>
+                <div class="field">
+                    <input type="text" class="input w50" v-model="movies.actors" name="actors"/>
+                    <div class="tips"></div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="label">
+                    <label>播放链接：</label>
+                </div>
+                <div class="field">
+                    <input type="text" class="input w50" v-model="movies.url" name="url"/>
+                    <div class="tips"></div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="label">
+                    <label>影视图片：</label>
+                </div>
+                <div class="field">
+                    <input type="file" id="url1" name="picPath" class="input tips" style="width:25%; float:left;"
+                           data-toggle="hover" data-place="right" @change="uploadFile()"/>
+                    <div class="tipss">图片尺寸：1300*500</div>
+                </div>
+            </div>
+
+            <div class="form-group" v-if="movies.picPath">
+                <div class="label">
+                    <label>原图片：</label>
+                </div>
+                <div class="field">
+                    <img v-bind:src="movies.picPath" alt="" width="300" height="100"/>
+                </div>
+            </div>
+            <div class="clear"></div>
+
+            <div class="form-group">
+                <div class="label">
+                    <label>影视分类标题：</label>
+                </div>
+                <div class="field">
+                    <select name="cid" class="input w50" v-model="movies.cid">
+                        <option value="">请选择分类</option>
+                        <option value="0">特色的</option>
+                        <option value="1">高观看率</option>
+                        <option value="2">高评分</option>
+                        <option value="3">最新上映</option>
+                    </select>
+                    <div class="tips"></div>
+                </div>
+            </div>
+
+
+            <div class="form-group">
+                <div class="label">
+                    <label>影视描述：</label>
+                </div>
+                <div class="field">
+                    <textarea class="input" style="height:250px; border:1px solid #ddd;" v-model="movies.contentDesc"
+                              name="contentDesc"></textarea>
+                    <div class="tips"></div>
+                </div>
+            </div>
+
+            <div class="clear"></div>
+
+            <div class="form-group">
+                <div class="label">
+                    <label>影视关键字：</label>
+                </div>
+                <div class="field">
+                    <input type="text" class="input" v-model="movies.keyword" name="keyword"/>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="label">
+                    <label>排序：</label>
+                </div>
+                <div class="field">
+                    <input type="number" class="input w50" v-model="movies.orderNo" name="orderNo"/>
+                    <div class="tips"></div>
+
+                </div>
+            </div>
+			<!--
+            <div class="form-group">
+                <div class="label">
+                    <label>上映时间：</label>
+                </div>
+                <div class="field">
+                    <input type="text" id="showTime" class="laydate-icon input w50" v-model="movies.showTime"
+                           name="showTime" />
+                    <div class="tips"></div>
+
+                </div>
+            </div>
+			-->
+            <div class="form-group">
+                <div class="label">
+                    <label></label>
+                </div>
+                <div class="field">
+                    <a class="button bg-main icon-check-square-o" @click="saveOrUpdate()"> 提交</a>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<script type="text/javascript">
+    const app = new Vue({
+        el: '#moviesDiv',
+        data: {
+            movies: {}//
+        },
+        methods: {
+            //图片上传
+            uploadFile() {
+                alert(111);
+                let formData = new window.FormData();
+                formData.append('uploadFile', document.querySelector('input[type=file]').files[0]);
+                let options = {  // 设置axios的参数
+                    url: "/file/upload",//访问地址
+                    data: formData,
+                    method: 'post',
+                    headers: {
+                        'Content-Type': 'multipart/form-data'
+                    }
+                };
+                axios(options).then(resp => {
+                    if (resp.data != "") {
+                        console.log(resp.data);
+                        this.movies.picPath = resp.data;//将图片访问地址记录到movies对象
+                    }
+                })
+            },
+            saveOrUpdate(){
+                axios.post("/movies" , this.movies).then(resp=>{
+                    //console.log(resp.data);
+                    if(resp.data){
+                        alert("操作成功");
+                        //跳回去查询页面
+                        location.href="/movies_list.html";
+                    }else{
+                        alert("操作失败")
+                    }
+                })
+            },
+            findById(id){
+                axios.get("/movies/"+id).then(resp=>{
+                    console.log(resp.data);
+                    this.movies=resp.data;
+                })
+            }
+            },
+        created(){
+            //页面加载函数
+            //1.获得地址栏?号之后的内容  如果有?之后的内容 表示为修改
+            //2.截取获得id
+            let moviesId = location.search.split("=")[1];
+            // 如果数字为0 表示false 如果非0 表示为0  js的默认判断
+            // 如果字符串为空 就是false  如果非空就是true
+            if(moviesId){
+                //3.根据id就可以查询到 movies对象
+                this.findById(moviesId);
+            }
+
+        }
+    })
+</script>
+
+<script>
+    lay('#version').html('-v' + laydate.v);
+    //执行一个laydate实例
+    laydate.render({
+        elem: '#showTime' //指定元素
+    });
+</script>
+<script src="/js/verify.js"></script>
+</body>
+</html>
